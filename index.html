@@ -18,11 +18,16 @@
 Enable Authentication > Email/Password, create Firestore, then publish the security rules provided with this file.
 নিজের account-কে admin করতে: প্রথমে register/login করুন, তারপর Firestore users/{UID} document-এ role: "admin" Console থেকে যোগ করুন।
 Public code-এ admin role তৈরি করার সুবিধা কখনো যোগ করবেন না। */
-const firebaseConfig={apiKey:"PASTE_YOUR_API_KEY",authDomain:"PASTE_YOUR_PROJECT.firebaseapp.com",projectId:"PASTE_YOUR_PROJECT_ID",storageBucket:"PASTE_YOUR_PROJECT.appspot.com",messagingSenderId:"PASTE_YOUR_SENDER_ID",appId:"PASTE_YOUR_APP_ID"};
-const $=id=>document.getElementById(id), status=(id,msg,kind="")=>{$(id).textContent=msg;$(id).className="status "+kind}, esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-let auth,db,authApi,fs,user=null,admin=false;
-if(Object.values(firebaseConfig).some(v=>v.startsWith("PASTE_")))status("authStatus","Firebase চালু করতে firebaseConfig-এ আপনার প্রকৃত Web App config বসান।","err");
-else try{
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyCiNCQWuuSOVV9BSJu351CE5QvL9HEqxao",
+  authDomain: "skill-bharat-c2892.firebaseapp.com",
+  projectId: "skill-bharat-c2892",
+  storageBucket: "skill-bharat-c2892.firebasestorage.app",
+  messagingSenderId: "359940358953",
+  appId: "1:359940358953:web:d7aaf23c2c6c8634996d38",
+  measurementId: "G-HVRE9PK3VT"
+};
  const appApi=await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js");authApi=await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js");fs=await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js");const app=appApi.initializeApp(firebaseConfig);auth=authApi.getAuth(app);db=fs.getFirestore(app);
  authApi.onAuthStateChanged(auth,async u=>{user=u;admin=false;$("logoutBtn").classList.toggle("hidden",!u);$("userInfo").classList.toggle("hidden",!u);if(u){$("userInfo").textContent="Logged in: "+u.email;try{const s=await fs.getDoc(fs.doc(db,"users",u.uid));admin=s.exists()&&s.data().role==="admin"}catch(e){console.error(e)}}$("admin").classList.toggle("hidden",!admin);if(admin){$("adminEmail").textContent=u.email||u.uid;loadAdmissions();loadCerts()}});
 }catch(e){status("authStatus","Firebase setup error: "+e.message,"err")}
